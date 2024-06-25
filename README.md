@@ -16,6 +16,7 @@ A genetic algorithm (GA) is a search heuristic inspired by the principles of nat
 Through these steps, the genetic algorithm evolves the population towards better solutions over successive generations.
 
 **Example** :
+
 **Initialisation**
 You have a function. for example, here function is X^2*exp(-x^2). You have to finc maxima of that function.
 For this, we use an algoritm that is similar to processes occuring into chromosome such as crossing over, mutation etc.
@@ -27,15 +28,20 @@ For this, we use an algoritm that is similar to processes occuring into chromoso
 **Parent pool formation**
 You will get a range.Then you have to normalise it.
 Generate a random value between 0 to 1.
+
 if it falls between 0 - sort_pi[0], then pick the first chromosome
+
 if falls between sort_pi[0] - sort_pi[1], pick second chromosome
+
 . . . . . . .
 . . . . . . .
 
 **Cross over**
+
 now you have to generate father and mother population. and randomly change some segments between these 2 to cross over. After crossing over, join them again and it will be child population.
 
 **Mutation**
+
 Now from child population, randomly select a gene and replace it with random number.
 
 After completing mutation step, calculate the fitness, you will see that fitness will be greater than the initial one. By iterating these steps, you will find maxima of the function.
