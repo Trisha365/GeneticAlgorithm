@@ -1,0 +1,127 @@
+import numpy as np
+import random
+
+F = []
+
+# Generating 5 arrays of random coordinates
+for i in range(10):
+    array = np.random.uniform(0.5, 3, size=(5, 3)).round(2)
+    F.append(array)
+#print(f"initial pop :{F}")
+
+
+def lj_potential(coordinates):
+    epsilon = 1.0  # Energy parameter
+    sigma = 1.0    # Distance at which potential reaches minimum
+
+    total_energy = 0.0
+    num_particles = len(coordinates)  # Number of particles
+    #print(len(coordinates))
+    # Iterate over each unique pair of particles
+    for i in range(num_particles):
+        for j in range(i + 1, num_particles):
+            # Extract coordinates for particle i and j
+            coords_i = coordinates[i]
+            coords_j = coordinates[j]
+
+            # Calculate distances between particles
+            dx = coords_i[0] - coords_j[0]
+            dy = coords_i[1] - coords_j[1]
+            dz = coords_i[2] - coords_j[2]
+            r_ij = np.sqrt(dx**2 + dy**2 + dz**2)
+            # Print the distance between particles
+            #print("Distance between particle", i, "and particle", j, ":", r_ij)
+            # Compute Lennard-Jones potential energy
+            lj_term = (sigma / r_ij)**12 - (sigma / r_ij)**6
+            total_energy += 4 * epsilon * lj_term
+
+    return total_energy
+
+for i in range(10000):
+    lj_energy = []
+# Loop over each set of coordinates in F
+    for coords in F:
+        lj = lj_potential(coords)
+        lj_energy.append(lj)
+    #print(f"min value of potential :{ min(lj_energy)}")
+
+    fitness = []
+    for i in lj_energy:
+        fitness.append(np.exp(-i))
+    #print(f"fitness :{fitness}")
+    #print(f"max fitness value : {max(fitness)}")
+
+    pi = []
+    a = sum(fitness)
+    for i in fitness:
+        pi.append(i / a)
+    #print(f"probability: {pi}")
+
+    pi1 = np.sort(pi)
+    #print(f"sorted pi: {pi1}")
+
+    x = np.random.rand(10)
+    #print(x)
+
+    parent_pool = []
+    for i in x:
+
+        # Find the index in sort_pi that corresponds to i in sort_pi
+        idx = np.searchsorted(pi1, i)
+        #print(idx)
+        # Adjust idx to stay within the bounds of sorted_norm
+        idx = min(idx, len(pi1) - 1)
+        #print(idx)
+        # Use idx to find the index in norm_fit and fun
+        selected_idx = np.where(pi == pi1[idx])[0][0]
+        #print(selected_idx)
+        # Append the value from fun at the selected index to parent_pool
+        parent_pool.append(F[selected_idx])
+
+    #print(parent_pool)
+
+    def perform_crossover(parent_pool):
+        father = random.sample(parent_pool, 5)
+        mother = random.sample(parent_pool, 5)
+
+        offspring = []
+
+        for j in range(5):
+            a = np.random.randint(1, len(father[j]))
+
+            f = father[j]
+            m = mother[j]
+
+            father_offspring = np.concatenate((f[:a], m[a:]))
+            mother_offspring = np.concatenate((m[:a], f[a:]))
+
+            offspring.extend([father_offspring, mother_offspring])
+
+        return offspring
+    new_population = perform_crossover(parent_pool)
+    #print(new_population)
+    parent_pool = new_population
+
+
+    def mutation(n):
+        mutated_chromosome = []
+        for i in n:
+            if np.random.rand() < 0.5:  # Assume 50% probability of mutation for each gene
+                mutate_position = np.random.randint(0, len(i))
+                i[mutate_position] = round(random.uniform(0.5, 3), 2)  # Generate a new random coordinate
+            mutated_chromosome.append(i)
+        return mutated_chromosome
+
+
+    # Mutation step
+    for i in range(len(parent_pool)):
+        if np.random.rand() < 0.5:  # Assume 50% probability of mutation
+            parent_pool[i] = mutation(parent_pool[i])
+
+    F = parent_pool
+
+print(f"Coordinates of the particles are as follows:\n")
+ind = lj_energy.index(min(lj_energy))
+print(F[ind])
+print(f"\nOptimal value of the lj_potential : {min(lj_energy)}")
+print(f"max fitness value : {max(fitness)}")
