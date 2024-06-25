@@ -17,5 +17,6 @@ Through these steps, the genetic algorithm evolves the population towards better
 
 **Example** :
 
-In the provided code, you have 5 particles. Now randomly select 3 coordinates for each of them. Calculate LJ potential. Write a program by using genetic algorithm to find the minimum potential. Find the optimal coordinates. (Given : epsilon = 1, sigma = 1, coordinates should be between 0.5 to 3)
+Q1. You have 5 particles. Now randomly select 3 coordinates for each of them. Calculate LJ potential. Write a program by using genetic algorithm to find the minimum potential. Find the optimal coordinates. (Given : epsilon = 1, sigma = 1, coordinates should be between 0.5 to 3)
+Q2. You have a function. for example, here function is X^2*exp(-x^2). You have to find maxima of that function.
 
