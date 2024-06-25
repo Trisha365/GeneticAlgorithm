@@ -1,0 +1,101 @@
+import numpy as np
+import random
+import copy
+
+#initialisation
+F = []
+for i in range(10):
+        F.append(np.random.uniform(1, 10, size=10))
+
+
+#print(f"parent population :\n {F}")
+for i in range(1000):
+        function = []
+        for j in F:
+            func_values = []
+            for k in j:
+
+                f = k ** 2 * np.exp(-1*k ** 2)
+                func_values.append(f)
+            function.append(sum(func_values))
+
+        fitness = []
+        for i in function:
+                fitness.append(np.exp(i))
+        #print(f"fitness :{fitness}")
+
+        pi = []
+        a = sum(fitness)
+        for i in fitness:
+                pi.append(i / a)
+        #print(f"probability: {pi}")
+
+        pi1 = np.sort(pi)
+        #print(f"sorted pi: {pi1}")
+
+        x = np.random.rand(10)
+        #print(x)
+
+        parent_pool = []
+        for i in x:
+
+            # Find the index in sort_pi that corresponds to i in sort_pi
+            idx = np.searchsorted(pi1, i)
+            #print(idx)
+            # Adjust idx to stay within the bounds of sorted_norm
+            idx = min(idx, len(pi1) - 1)
+            #print(idx)
+            # Use idx to find the index in norm_fit and fun
+            selected_idx = np.where(pi == pi1[idx])[0][0]
+            #print(selected_idx)
+            # Append the value from fun at the selected index to parent_pool
+            parent_pool.append(F[selected_idx])
+
+        #print(parent_pool)
+
+
+
+        def perform_crossover(parent_pool):
+            father = random.sample(parent_pool, 5)
+            mother = random.sample(parent_pool, 5)
+
+            offspring = []
+
+            for j in range(5):
+                a = np.random.randint(1, len(father[j]))
+
+                f = father[j]
+                m = mother[j]
+
+                father_offspring = np.concatenate((f[:a], m[a:]))
+                mother_offspring = np.concatenate((m[:a], f[a:]))
+
+                offspring.extend([father_offspring, mother_offspring])
+
+            return offspring
+        new_population = perform_crossover(parent_pool)
+        #print(new_population)
+        parent_pool = new_population
+
+
+        def mutation(chromosome):
+            l1 = random.randint(0, 9)
+            l2 = random.randint(0, 9)
+            k1 = chromosome[l1]
+            m1 = random.uniform(1, 11)
+            chromosome[l1] = m1
+            return chromosome
+
+        for i in range(len(parent_pool)):
+        # Randomly select a chromosome to mutate
+           if np.random.rand() < 0.5:  # Assume 50% probability of mutation
+              parent_pool[i] = mutation(parent_pool[i])
+
+
+
+        F = parent_pool
+print(f"Maximum values of x1,x2,x3....xn :\n")
+ind = function.index(max(function))
+print(F[ind])
+print(f"\nMaximum value of the function : {max(function)}\n")
+print(f"max fitness value : {max(fitness)}")
